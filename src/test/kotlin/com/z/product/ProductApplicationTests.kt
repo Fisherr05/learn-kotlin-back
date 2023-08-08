@@ -42,7 +42,7 @@ class ProductApplicationTests {
     @Test
     fun findAll() {
         val productsFromService = productService.findAll()
-        val products: List<Product> = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/product"))
+        val products: List<Product> = mockMvc.perform(MockMvcRequestBuilders.get("$URL_API"))
             .andExpect(status().isOk)
             .bodyTo(mapper)
         MatcherAssert.assertThat(productsFromService, Matchers.`is`(Matchers.equalTo(products)))
@@ -61,7 +61,7 @@ class ProductApplicationTests {
     @Test
     fun findByIdEmpty() {
         mockMvc.perform(MockMvcRequestBuilders.get("$URL_API/${UUID.randomUUID()}"))
-            .andExpect(status().isOk)
+            .andExpect(status().isNoContent)
             .andExpect(jsonPath("$").doesNotExist())
     }
 
@@ -73,7 +73,7 @@ class ProductApplicationTests {
             MockMvcRequestBuilders.post(URL_API)
                 .body(data = product, mapper = mapper)
         )
-            .andExpect(status().isOk)
+            .andExpect(status().isCreated)
             .bodyTo(mapper)
         assert(result)
     }
@@ -88,7 +88,7 @@ class ProductApplicationTests {
             MockMvcRequestBuilders.post(URL_API)
                 .body(data = product, mapper = mapper)
         )
-            .andExpect(status().isOk)
+            .andExpect(status().isConflict)
             .bodyTo(mapper)
         assert(!result) { "Should be false" }
     }
@@ -116,13 +116,13 @@ class ProductApplicationTests {
             MockMvcRequestBuilders.put(URL_API)
                 .body(data = product, mapper = mapper)
         )
-            .andExpect(status().isOk)
+            .andExpect(status().isConflict)
             .bodyTo(mapper)
         assert(!result) { "Should be false" }
     }
 
     @Test
-    fun deleteById(){
+    fun deleteById() {
         val productsFromService = productService.findAll()
         assert(!productsFromService.isEmpty()) { "Should not be empty" }
         val product = productsFromService.last()
@@ -134,5 +134,15 @@ class ProductApplicationTests {
             .bodyTo(mapper)
         assert(result)
         assert(!productService.findAll().contains(product))
+    }
+
+    @Test
+    fun deleteByIdFail() {
+        val result: Boolean = mockMvc.perform(
+            MockMvcRequestBuilders.delete("$URL_API/${UUID.randomUUID()}")
+        )
+            .andExpect(status().isNoContent)
+            .bodyTo(mapper)
+        assert(!result) { "Should be false" }
     }
 }
