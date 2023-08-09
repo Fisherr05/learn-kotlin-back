@@ -5,7 +5,6 @@ import com.z.product.domain.Product
 import com.z.product.service.ProductService
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
-import org.junit.jupiter.api.MethodOrderer
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation
 import org.junit.jupiter.api.Order
 import org.junit.jupiter.api.Test
@@ -47,7 +46,7 @@ class ProductApplicationTests {
     @Order(1)
     fun findAll() {
         val productsFromService = productService.findAll()
-        val products: List<Product> = mockMvc.perform(MockMvcRequestBuilders.get("$URL_API"))
+        val products: List<Product> = mockMvc.perform(MockMvcRequestBuilders.get(URL_API))
             .andExpect(status().isOk)
             .bodyTo(mapper)
         MatcherAssert.assertThat(productsFromService, Matchers.`is`(Matchers.equalTo(products)))

@@ -2,7 +2,6 @@ package com.z.product.service
 
 import com.z.product.dao.ProdutDAO
 import com.z.product.domain.Product
-import com.z.product.utils.update
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 
