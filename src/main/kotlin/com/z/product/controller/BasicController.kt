@@ -1,6 +1,8 @@
 package com.z.product.controller
 
 import com.z.product.service.BasicCrud
+import io.swagger.v3.oas.annotations.Operation
+import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -8,6 +10,9 @@ import org.springframework.web.bind.annotation.*
 abstract class BasicController<T, ID>(
     private val basicCrud: BasicCrud<T, ID>
 ) {
+    @Operation(
+        summary = "Get all entities",
+    )
     @GetMapping
     fun findAll() = basicCrud.findAll()
 
@@ -23,7 +28,7 @@ abstract class BasicController<T, ID>(
     }
 
     @PostMapping
-    fun save(@RequestBody body: T): ResponseEntity<Boolean> {
+    fun save(@Valid @RequestBody body: T): ResponseEntity<Boolean> {
         val entity = basicCrud.save(body)
         return ResponseEntity.status(
             if (entity)
